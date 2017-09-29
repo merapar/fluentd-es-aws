@@ -1,8 +1,16 @@
 FROM ubuntu:16.04
 
-RUN apt-get update -y && apt-get install -y curl ruby2.3 ruby2.3-dev make g++
+ARG DEBIAN_FRONTEND=noninteractive
 
-RUN gem2.3 install fluent-plugin-kubernetes_metadata_filter -v 0.19.0
-RUN gem2.3 install fluent-plugin-flatten-hash -v 0.2.0
-RUN gem2.3 install fluent-plugin-systemd -v 0.0.2
-RUN gem2.3 install fluent-plugin-aws-elasticsearch-service -v 0.1.6
+RUN apt-get update -y \
+ && apt-get install -y curl ruby2.3 ruby2.3-dev make g++ \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
+
+
+RUN gem install fluentd:0.14.21 \
+ && gem install fluent-plugin-kubernetes_metadata_filter:0.29.0 \
+   fluent-plugin-flatten-hash:0.5.0 \
+   fluent-plugin-systemd:0.3.0 \
+   fluent-plugin-aws-elasticsearch-service:0.1.6 \
+   && rm -rf /tmp/* /var/tmp/* /usr/lib/ruby/gems/*/cache/*.gem
